@@ -1,3 +1,18 @@
+2004-04-22  David Blacka  <davidb@verisignlabs.com>
+
+	* release 0.06
+
+	* MANIFEST.SKIP: prevent old releases from getting into the
+	MANIFEST.
+
+	* lib/Net/BEEP/Lite/Session.pm (_read_frame): Allow for empty
+	frames.  This used to erroneously assume that if the frame payload
+	length was 0, there was no trailer.
+
+	* lib/Net/BEEP/Lite/Message.pm (add_frame, _decode_mime_entity):
+	suppress more "uninitialized value" warnings when there are no
+	MIME headers.
+
 2004-04-08  David Blacka  <davidb@verisignlabs.com>
 
 	* release 0.05

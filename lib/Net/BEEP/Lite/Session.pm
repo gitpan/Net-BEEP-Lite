@@ -1,4 +1,4 @@
-# $Id: Session.pm,v 1.12 2004/04/08 18:46:20 davidb Exp $
+# $Id: Session.pm,v 1.13 2004/04/22 20:45:58 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -832,8 +832,8 @@ sub _read_frame {
   }
 
   my $frame = Net::BEEP::Lite::Frame->new(Header => $header,
-				        Debug  => $self->{debug},
-				        Trace  => $self->{trace});
+                                          Debug  => $self->{debug},
+                                          Trace  => $self->{trace});
 
   # make sure the frame could be built \(i.e., known frame type, valid
   # frame headers...\)
@@ -842,8 +842,9 @@ sub _read_frame {
     return;
   }
 
-  # if we have no payload (SEQ, NUL, etc.), then we are done.
-  return $frame if $frame->size() == 0;
+  # if we have no payload (SEQ, NUL), then we are done.
+  return $frame if $frame->size() == 0 and ($frame->type() eq 'SEQ' or
+                                            $frame->type() eq 'NUL');
 
   # read the payload.
 

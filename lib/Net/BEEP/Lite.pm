@@ -1,4 +1,4 @@
-# $Id: Lite.pm,v 1.12 2004/03/29 19:03:07 davidb Exp $
+# $Id: Lite.pm,v 1.13 2004/04/22 20:55:45 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -36,7 +36,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw(beep_listen), qw(beep_connect) ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 our $errorstr;
 our $debug;

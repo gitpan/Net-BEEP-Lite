@@ -1,4 +1,4 @@
-# $Id: ClientSession.pm,v 1.6 2003/09/11 19:57:31 davidb Exp $
+# $Id: ClientSession.pm,v 1.7 2004/04/22 20:45:13 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -201,7 +201,8 @@ sub close_channel {
 
 =item new_message( I<ARGS> )
 
-This is a convenience method for creating new messages.  It accepts the following named parameters:
+This is a convenience method for creating new messages.  It accepts
+the following named parameters:
 
 =over 4
 

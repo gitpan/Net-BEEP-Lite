@@ -1,4 +1,4 @@
-# $Id: Message.pm,v 1.8 2003/09/11 23:46:35 davidb Exp $
+# $Id: Message.pm,v 1.9 2004/04/22 20:45:32 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -418,7 +418,7 @@ sub add_frame {
   $self->{content} = undef;
 
   my ($content, @headers) = _decode_mime_entity($frame->payload());
-  $self->{payload} .= $content;
+  $self->{payload} .= $content if $content;
 }
 
 =item has_more_frames()
@@ -516,7 +516,7 @@ sub _decode_mime_entity {
   # method.
 
   # first make sure that this looks like a MIME message at all:
-  if (not $block =~ /^Content-Type:/im) {
+  if (not $block or not $block =~ /^Content-Type:/im) {
     return ($block, @headers);
   }
 

@@ -1,4 +1,9 @@
-2004-01-29  David Blacka  <davidb@pinion.verisignlabs.com>
+2004-02-23  David Blacka  <davidb@verisignlabs.com>
+
+	* lib/Net/BEEP/Lite.pm (beep_connect): add "Socket" parameter,
+	from Matthew Darwin <matthew -at- mdarwin.ca>.
+
+2004-01-29  David Blacka  <davidb@verisignlabs.com>
 
 	* lib/Net/BEEP/Lite/Session.pm (close_session): set the 'sock'
 	member var. to undef to prevent calls to IO::Socket::is_connected

@@ -52,7 +52,7 @@ is($next_chno, 1, '_next_channel_number returned expected channel (1)');
 my $next_next_chno = $session->_next_channel_number();
 is($next_next_chno, 3, '_next_channel_number incremented correctly');
 
-# FIXME: test channel number rollover here.
+# test channel number rollover here.
 $session->{channelno_counter} = 2147483647;
 is($session->_next_channel_number(), 2147483647,
    '_next_channel_number rollover 1');
@@ -130,6 +130,7 @@ SKIP:
   is($frame->size(), $frame_payload_size, "_read_frame: right size");
   is($frame->ansno(), 0, "_read_frame: right ansno");
 
+  # FIXME: test _read_frame body timeout
 
   # _recv_frame:
 
@@ -140,12 +141,12 @@ SKIP:
   $channel_2->{seqno} = 120;
 
   # generate some content to read.
-  $frame = new Net::BEEP::Lite::Frame(Type => 'MSG',
-				    Channel => 2,
-				    Msgno => 3,
-				    More => '.',
-				    Seqno => 200,
-				    Payload => $frame_payload);
+  $frame = new Net::BEEP::Lite::Frame(Type    => 'MSG',
+                                      Channel => 2,
+                                      Msgno   => 3,
+                                      More    => '.',
+                                      Seqno   => 200,
+                                      Payload => $frame_payload);
   $output = "SEQ 2 100 4096\r\n" . $frame->to_string();
   $fake_socket->seek(0,0);
 
@@ -198,7 +199,7 @@ SKIP:
   # to test the higher level primitives, we need a better fake socket.
   # we will create a new session, just to reset everything.
 
-  my $input; my $output;
+  my $input; $output = undef;
   $fake_socket = new FullDuplexScalar(\$input, \$output);
   $session = new Net::BEEP::Lite::Session(Socket => $fake_socket);
 
@@ -278,7 +279,7 @@ SKIP:
 
   # create 4 ans messages: 3 on one channel, 1 on another.
   for (my $i = 0; $i < 4; $i++) {
-    @msgs[$i] = new Net::BEEP::Lite::Message(Type    => 'ANS',
+    $msgs[$i] = new Net::BEEP::Lite::Message(Type    => 'ANS',
 					   Msgno   => 12,
 					   Ansno   => $i == 3 ? 0 : $i,
 					   Channel => $i == 3 ? 3 : 1,
@@ -362,7 +363,7 @@ SKIP:
   # waiting for our needed SEQ):
 
   $outgoing_msg->reset_frames();
-  my $expected_output = $outgoing_msg->next_frame(310, 200)->to_string();
+  $expected_output = $outgoing_msg->next_frame(310, 200)->to_string();
   $expected_output .= $outgoing_msg->next_frame(510, 100)->to_string();
   $expected_output .= $outgoing_msg->next_frame(610, 200)->to_string();
 

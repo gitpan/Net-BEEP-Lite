@@ -1,3 +1,21 @@
+2004-04-08  David Blacka  <davidb@verisignlabs.com>
+
+	* release 0.05
+
+2004-03-31  David Blacka  <davidb@verisignlabs.com>
+
+	* lib/Net/BEEP/Lite/Session.pm (_read_frame): Add read timeouts
+	(using alarm).  This should allow servers to shutdown idle
+	sessions and prevent peers from getting wedged by framing errors.
+
+2004-02-24  David Blacka  <davidb@verisignlabs.com>
+
+	* lib/Net/BEEP/Lite/Frame.pm (_parse_header): suppress
+	"uninitialized value" warnings, from Matthew Darwin <matthew -at-
+	mdarwin.ca>
+
+	* release 0.04
+
 2004-02-23  David Blacka  <davidb@verisignlabs.com>
 
 	* lib/Net/BEEP/Lite.pm (beep_connect): add "Socket" parameter,
@@ -9,6 +27,8 @@
 	member var. to undef to prevent calls to IO::Socket::is_connected
 	after the the socket is known to be closed.
 
+	* release 0.03
+	
 2003-10-06  David Blacka  <davidb@verisignlabs.com>
 
 	* lib/Net/BEEP/Lite.pm (_beep_listen_fork): Ignore SIGCHILDs

@@ -1,4 +1,4 @@
-# $Id: Frame.pm,v 1.7 2003/09/11 22:32:12 davidb Exp $
+# $Id: Frame.pm,v 1.8 2004/03/29 19:02:37 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -332,7 +332,10 @@ sub _parse_header {
 
   $self->{type} = shift @fields;
 
-  if ($self->{type} eq "SEQ") {
+  if (! defined $self->{type}) {
+     # FIXME: should we die here?  For now, it seems good.
+     die "*** data frame header malformed: type undefined\n";
+  } elsif ($self->{type} eq "SEQ") {
     $self->{channel_number} = shift @fields;
     $self->{ackno} 	    = shift @fields;
     $self->{window} 	    = shift @fields;

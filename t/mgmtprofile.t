@@ -74,7 +74,7 @@ $root = $parser->parse_string($msg->content())->documentElement();
 is($root->nodeName, "start", "start message has start element");
 is($root->getAttribute('number'), 1, 'has expected channel number');
 is($root->getAttribute('serverName'), 'host.example.com', 'has serverName');
-my @children = $root->childNodes;
+@children = $root->childNodes;
 for my $child (@children) {
   if ($child->isa('XML::LibXML::Element')) {
     is($child->nodeName, "profile", 'has profile child element');

@@ -1,5 +1,5 @@
-Net::BEEP::Lite version 0.02
-==========================
+Net::BEEP::Lite version 0.05
+============================
 
 Net::BEEP::Lite is a lightweight implementation of a BEEP (RFC 3080,
 RFC 3081) client/server framework.  This package is intended for
@@ -48,7 +48,7 @@ davidb@verisignlabs.com.
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2003 Verisign, Inc.
+Copyright (C) 2003, 2004 VeriSign, Inc.
 
 This library is free software; you can redistribute it and/or modify
 it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE.

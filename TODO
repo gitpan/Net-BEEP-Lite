@@ -8,8 +8,6 @@ High Priority:
 
 Low(er) Priority:
 
-  * the TLS profile.
-
   * various SASL profiles.
 
   * a multiple message send method.

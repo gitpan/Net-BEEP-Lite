@@ -17,8 +17,8 @@ to a different class (Session).
 
 It only contains information about the frame.
 
-It supports the union of all known frame types (including ANS and
-SEQ), so is generally not to be subclassed.
+It is the union of all known frame types (including ANS and SEQ), so
+is generally not to be subclassed.
 
 Message
 --------
@@ -75,7 +75,7 @@ processing, and channel zero messages.
 Session objects also contain routines for sending management
 messages.  This would normally be the provence of the management
 profile, but since that is held internally by the session, the send
-methods are made available at that level.
+methods are made available at this level.
 
 Profiles
 ---------

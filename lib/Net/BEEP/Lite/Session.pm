@@ -1,4 +1,4 @@
-# $Id: Session.pm,v 1.11 2004/01/29 18:53:26 davidb Exp $
+# $Id: Session.pm,v 1.12 2004/04/08 18:46:20 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -94,6 +94,22 @@ Do not send the greeting message.  This can be sent later with the
 C<send_greeting> method.  This will be true if a socket isn't
 supplied.
 
+=item DefaultLocalWindow
+
+Set the base local TCP window to a particular value.  This number
+should be 4096 (the default) or higher.
+
+=item IdleTimeout
+
+The number of seconds to wait for a frame.  Zero (the default) means
+to wait indefinitely.
+
+=item Timeout
+
+The number of seconds to wait for a frame body to be completely read.
+This should ususally be non-zero to prevent framing errors from
+locking the session forever.  The default is 30 seconds.
+
 =back
 
 It also takes the named parameters for C<Net::BEEP::Lite::MgmtProfile>.
@@ -138,6 +154,11 @@ sub initialize {
   # our general received message queue;
   $self->{messages} = [];
 
+  # our default idle timeout
+  $self->{idle_timeout} = 0;
+  # our default read timeout for frame bodies.
+  $self->{timeout} = 60;
+
   for (keys %args) {
     my $val = $args{$_};
 
@@ -159,6 +180,14 @@ sub initialize {
     };
     /^trace$/io and do {
       $self->{trace} = $val;
+      next;
+    };
+    /^idle.?timeout/io and do {
+      $self->{idle_timeout} = $val;
+      next;
+    };
+    /^timeout$/io and do {
+      $self->{timeout} = $val;
       next;
     };
   }
@@ -778,8 +807,24 @@ sub _read_frame {
 
   my $sock = $self->{sock};
 
+  my ($header, $read, $old_alarm_value);
+
+  # set up an alarm handler for this method only.
+  local $SIG{ALRM} = sub { die "alarm timeout\n"; };
+
   # read the header.
-  my $header = $sock->getline();
+  eval {
+    $old_alarm_value = alarm($self->{idle_timeout});
+    $header = $sock->getline();
+  };
+  if ($@ and $@ =~ /^alarm timeout/io) {
+    $self->abort("idle timeout");
+    return;
+  } elsif ($@) {
+    die $@;
+  }
+  alarm($old_alarm_value);
+
   # FIXME: what does a null header mean?
   if (!$header) {
     $self->abort("null header detected (socket closed?)");
@@ -802,12 +847,29 @@ sub _read_frame {
 
   # read the payload.
 
-  # FIXME: this looping probably isn't necessary.  Some kind of
-  # timeout (in case the content length is too large) probably is.
+  # FIXME: the following construct is not ideal. While the loop seems
+  # necessary from a theoretical perspective (underlying read
+  # operations are not guaranteed to return with all things read), it
+  # is unknown if there is a real case where this read call would
+  # return early and yet be able to continue.
+
+  # Also note that a timer is set (and probably should always be set)
+  # to (help) recover from cases where the frame size was incorrect
+  # and too large.
   my $offset = 0;
   my $buffer;
   while (1) {
-    my $read = $sock->read($buffer, $frame->size(), $offset);
+    eval {
+      $old_alarm_value = alarm($self->{timeout});
+      $read = $sock->read($buffer, $frame->size(), $offset);
+    };
+    if ($@ and $@ =~ /^alarm timeout/) {
+      $self->abort("read operation timed out (invalid frame?)");
+      return;
+    } elsif ($@) {
+      die $@;
+    }
+    alarm($old_alarm_value);
     last if ($read == 0 || $read == $frame->size());
     $offset += $read;
   }
@@ -816,7 +878,18 @@ sub _read_frame {
 
   # now read the trailer
 
-  my $read = $sock->read($buffer, 5);
+  eval {
+    $old_alarm_value = alarm($self->{timeout});
+    $read = $sock->read($buffer, 5);
+  };
+  if ($@ and $@ =~ /^alarm timeout/) {
+    $self->abort("read operation timed out (invalid frame?)");
+    return;
+  } elsif ($@) {
+    die $@;
+  }
+  alarm($old_alarm_value);
+
   if ($buffer ne "END\r\n") {
     $self->abort("invalid frame trailer for '$buffer'");
     return;
@@ -866,6 +939,7 @@ sub _is_connected {
 
   return ($self->{sock} && $self->{sock}->connected());
 }
+
 
 =pod
 

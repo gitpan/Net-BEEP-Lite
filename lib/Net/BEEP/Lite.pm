@@ -1,4 +1,4 @@
-# $Id: Lite.pm,v 1.8 2003/09/11 23:24:01 davidb Exp $
+# $Id: Lite.pm,v 1.10 2004/01/29 18:52:58 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -36,7 +36,7 @@ our @ISA = qw(Exporter);
 our %EXPORT_TAGS = ( 'all' => [ qw(beep_listen), qw(beep_connect) ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 our $errorstr;
 our $debug;
@@ -219,6 +219,9 @@ sub beep_listen {
 sub _beep_listen_fork {
   my $sock     = shift;
   my %args     = @_;
+
+  # we aren't tracking the children, so just ignore their deaths.
+  $SIG{CHLD} = 'IGNORE';
 
   # we will just modify forked copies of this session.
   $args{NoGreeting} = 1;

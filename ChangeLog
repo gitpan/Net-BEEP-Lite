@@ -1,3 +1,15 @@
+2004-01-29  David Blacka  <davidb@pinion.verisignlabs.com>
+
+	* lib/Net/BEEP/Lite/Session.pm (close_session): set the 'sock'
+	member var. to undef to prevent calls to IO::Socket::is_connected
+	after the the socket is known to be closed.
+
+2003-10-06  David Blacka  <davidb@verisignlabs.com>
+
+	* lib/Net/BEEP/Lite.pm (_beep_listen_fork): Ignore SIGCHILDs
+	[oops].
+	
+
 2003-09-11  David Blacka  <davidb@verisignlabs.com>
 
 	* renamed to Net::BEEP::Lite.

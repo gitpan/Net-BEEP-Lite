@@ -6,6 +6,8 @@ use lib "$Bin/../lib";
 use Net::BEEP::Lite;
 use Net::BEEP::Lite::Session;
 
+use warnings;
+
 # connect to the server (this will die if it can't).
 my $session = Net::BEEP::Lite::beep_connect(Host => "localhost",
 					    Port => $ARGV[0]);
@@ -19,7 +21,7 @@ my $channel_num_2 = $session->start_channel
   (URI => 'http://xml.resource.org/profiles/NULL/ECHO');
 
 
-my $resp = $session->send_and_recv_message(Content-Type => 'text/plain',
+my $resp = $session->send_and_recv_message(ContentType  => 'text/plain',
 					   Content      => "Echo this!",
 					   Channel      => $channel_num);
 

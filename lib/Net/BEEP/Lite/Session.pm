@@ -1,4 +1,4 @@
-# $Id: Session.pm,v 1.10 2003/09/11 19:57:31 davidb Exp $
+# $Id: Session.pm,v 1.11 2004/01/29 18:53:26 davidb Exp $
 #
 # Copyright (C) 2003 Verisign, Inc.
 #
@@ -601,6 +601,7 @@ sub close_session {
   # we should have already sent or received the "ok" message by now
   # (unless we are aborting)
   $self->{sock}->close();
+  $self->{sock} = undef;
   print STDERR "closed socket\n" if $self->{debug};
 }
 

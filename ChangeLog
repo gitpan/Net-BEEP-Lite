@@ -1,0 +1,29 @@
+2003-09-11  David Blacka  <davidb@verisignlabs.com>
+
+	* renamed to Net::BEEP::Lite.
+
+	* MgmtProfile.pm: better piggybacked data behavior: use
+	BaseProfile::start_channel_request, plus <profile> replies get
+	their data stowed in the session.  Also,
+	send_start_channel_request return a tuple of (channel_number,
+	message).
+
+	* Session.pm (recv_message, _recv_message, _recv_frame): add named
+	parameters to this chain of routines.  The only one so far is
+	"NoSEQ" which will surpress SEQ generation by _recv_frame.
+
+	* Session.pm (_tuning_reset): added.
+
+	* BaseProfile.pm: renamed startChannelData to
+	start_channel_request and changed the result semantics to a richer
+	set of options.
+
+2003-09-08  David Blacka  <davidb@verisignlabs.com>
+
+	* released version 0.01 (a beta release).
+
+2003-08-27  David Blacka  <davidb@verisignlabs.com>
+
+	* original version; created by h2xs 1.22 with options
+	  -AX -n Net::BeepLite
+
